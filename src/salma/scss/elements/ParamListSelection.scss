@@ -1,0 +1,32 @@
+.param-list-selection{
+	.MuiButtonBase-root{
+		padding: 6px 0;
+		padding-left: 6px;
+		&.Mui-selected{
+			background: $colMain;
+			color: $colWhite;
+			font-weight: bold;
+			&:hover{
+				background: $colMain;
+			}
+		}
+		&.state-completed{
+			color: $colSuccess;
+			font-weight: bold;
+			&.Mui-selected{
+				background: $colMain;
+				color: $colWhite;
+			}
+		}
+		display: flex;
+		justify-content: space-between;
+		svg{
+			margin-right: 6px;
+			width: 16px;
+		}
+	}
+	.list-container{
+		margin-left: -6px;
+		overflow: scroll;
+	}
+}

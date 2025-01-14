@@ -1,0 +1,77 @@
+@import "../global/variables";
+@import "../global/mixins";
+
+.tool-tip-icon-button{
+	cursor: pointer !important;
+	display: inline-flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 5px 10px 5px 10px;
+	//font-weight: bold;
+	span{
+		padding-left: 10px;
+		padding-right: 5px;
+	}
+	svg{
+		width: 20px;
+		height: 20px;
+	}
+
+	&.disabled{
+		opacity: 0.1;
+		pointer-events: none;
+	}
+	border: 1px solid black;
+	border-radius: 3px;
+	transition: all 0.3s;
+	&.primary{
+		background: $colMain;
+		border-color: $colMain;
+		color: white;
+		svg{ fill: white; }
+		&:hover{
+			background: rgba($colMain,0.8);
+		}
+	}
+	&.secondary{
+		background: $colBGLight;
+		border-color: $colBGLight;
+		color: $colBGMedium;
+		svg{ fill: $colBGMedium; }
+		&:hover{
+			background: rgba($colBGMedium,0.2);
+		}
+	}
+	&.outline{
+		background: none !important;
+		&.primary{
+			color: $colMain;
+			svg{ fill: $colMain; }
+		}
+		&.secondary{
+			color: $colBGMedium;
+			svg{ fill: $colBGMedium; }
+		}
+	}
+	&.transparent{
+		background: none !important;
+		border-color: transparent !important;
+		padding-left: 0;
+		padding-right: 0;
+		&:hover{
+			background: rgba($colBGMedium,0.2);
+		}
+		&.secondary{
+			color: $colBGMedium;
+			svg{ fill: $colBGMedium; }
+		}
+		&.primary{
+			color: $colMain;
+			svg{ fill: $colMain; }
+
+			&:hover{
+				background: rgba($colMain,0.2);
+			}
+		}
+	}
+}

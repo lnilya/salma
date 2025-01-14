@@ -1,0 +1,28 @@
+@import '../../../../salma/scss/global/variables';
+@import '../../../../salma/scss/global/mixins';
+
+.salma-training {
+	.MuiDataGrid-columnHeader {
+		background: $colBGLight;
+		.MuiDataGrid-columnHeaderTitle{
+			font-weight: bold;
+		}
+		.MuiDataGrid-columnSeparator{
+			color: $colBGMedium
+		}
+	}
+
+	.table-cell{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: flex-start;
+
+		line-height: 1;
+		strong{
+			display: block;
+			padding-bottom: 5px;
+		}
+	}
+
+}

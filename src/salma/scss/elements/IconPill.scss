@@ -1,0 +1,30 @@
+.icon-pill{
+	svg{
+		width: 15px;
+		height: 15px;
+		margin-right: 5px;
+	}
+	font-size: 0.9em;
+	border-radius: 5px;
+	padding: 5px;
+	display: inline-flex;
+	margin-right: 10px;
+	cursor: help;
+	&.col-info{
+		background: $colBGLight;
+	}
+	&.col-error{
+		background: $colError;
+		color:white;
+	}
+	&.col-warning{
+		background: $colWarn;
+		color:white;
+	}
+	&.col-success{
+		background: $colSuccess;
+		color:white;
+	}
+
+	padding-right: 8px;
+}

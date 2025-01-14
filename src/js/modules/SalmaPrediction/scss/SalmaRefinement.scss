@@ -1,0 +1,39 @@
+@import '../../../../salma/scss/global/variables';
+@import '../../../../salma/scss/global/mixins';
+
+.salma-refinement {
+
+	.img-container{
+		position: relative;
+		display: inline-block;
+		max-height: calc(100vh - 130px);
+	}
+	.polygon-cloud {
+		z-index: 2;
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+	}
+
+	.masks-over-image{
+		img{
+			max-height: calc(100vh - 130px);
+		}
+	}
+	.poly-info{
+		text-align: right;
+	}
+	.outdated-settings{
+		z-index: 3;
+		position: fixed;
+		left: $parameterBarWidth + $sideMenuWidthClosed;
+		right: 0;
+		bottom: 0;
+		background: $colMainLight;
+		border-radius: 4px;
+		box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		padding: 15px;
+	}
+}
