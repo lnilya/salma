@@ -1,3 +1,12 @@
+from multiprocessing import freeze_support
+
+if __name__ == '__main__':
+    freeze_support()
+    import platform
+    if platform.system() != 'Windows':
+        from multiprocessing import set_start_method
+        set_start_method('fork', force=True)
+
 
 # coding: utf-8
 import os
@@ -7,16 +16,10 @@ if __name__ == '__main__':
     print("Starting Server (May take a while)...")
     #print process ID
     import sys
-    import platform
 
     from src.salma.py import settings
     from src.salma.py import eelutil
     from src.salma.py.eelinterface import *
-    from multiprocessing import set_start_method, freeze_support
-
-    if platform.system() != 'Windows':
-        freeze_support()
-        set_start_method('fork', force=True)
 
     if '--develop' in sys.argv:
         while True:

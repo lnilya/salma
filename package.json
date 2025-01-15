@@ -30,11 +30,14 @@
     "build:js": "react-scripts build",
     "start:py": "python3 index.py --develop",
     "startwin:py": "python index.py --develop",
+    "buildtest": "rmdir /s /q dist & rmdir /s /q build\\mptset & python -m eel mptest.py build --name mptset --onefile --console",
     "build:py": "python3 -m eel index.py build --name salma-1-0-0 --onedir --icon icon.icns --console",
     "buildwin:py": "python -m eel index.py build --onedir --name salma-1-0-0 --icon icon.ico",
     "clean:build": "rm -rf build dist",
+    "clean:buildwin": "rmdir /s /q dist & rmdir /s /q build",
     "start": "npm-run-all -p start:*",
     "build": "npm-run-all clean:build build:*",
+    "buildwin": "npm-run-all clean:buildwin build:js buildwin:py",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
