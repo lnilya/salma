@@ -75,7 +75,7 @@ def exportBatch(wf:str, species:list[str], exportCollective:bool, ncpus:int, sum
     for s in species:
         allFiles = Data.getFinalPredictedImages(wf,s)
         for f in allFiles:
-            allArgs.append((f,sum,s,splitter,dpi))
+            allArgs.append((f,sum,s,splitter,int(dpi)))
 
     updateFun(0, len(allArgs))
     res = mputil.runParallel(exportSingle, allArgs, ncpus, ncpus == 1, progressUpdate=updateFun)

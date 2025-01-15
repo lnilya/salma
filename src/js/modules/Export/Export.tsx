@@ -29,11 +29,17 @@ const Export: React.FC<IPredictionProps> = () => {
     
     useEffect(() => {
         server.loadData().then((res:EelResponse<ExportFolderContent>)=>{
-            console.log("Loaded",res)
-            const spNames = {}
-            for(let sp in res.data) spNames[res.data[sp].name] = res.data[sp].name + " (" + res.data[sp].exportableFiles.length + " files)"
-            setWFData(res.data)
-            changeTaskParameterConfig({"species": {input:{options: spNames}}})
+            if(res.error){
+                setError(res)
+            }else{
+                setError(null)
+                console.log("Loaded",res)
+                const spNames = {}
+                for(let sp in res.data) spNames[res.data[sp].name] = res.data[sp].name + " (" + res.data[sp].exportableFiles.length + " files)"
+                setWFData(res.data)
+                changeTaskParameterConfig({"species": {input:{options: spNames}}})
+            }
+
         })
     }, []);
     
@@ -47,12 +53,12 @@ const Export: React.FC<IPredictionProps> = () => {
         }
         <div className="button-bar fl-row-end pad-50-top">
         {curParams.singletable &&
-                <ToolTipIconButton Icon={Forest} onClick={()=>server.runExport("all")} tooltipText={'Export the data for all species into a single CSV that will be located in the working folder.'} text={"Export all species"}/>
+                <ToolTipIconButton Icon={Forest} onClick={()=>server.runExport("all",setError)} tooltipText={'Export the data for all species into a single CSV that will be located in the working folder.'} text={"Export all species"}/>
         }
         {!curParams.singletable && curParams.species &&
             <>
-                <ToolTipIconButton Icon={Forest} className={"margin-50-right"} color={"secondary"} onClick={()=>server.runExport("individual")} tooltipText={'Export the data for all species into separate CSVs located in the respective species folders.'} text={"Export every species"}/>
-                <ToolTipIconButton Icon={Park} color={"primary"} onClick={()=>server.runExport("single")} tooltipText={'Export the data for '+curParams.species+' into a CSV located in the species folder.'} text={"Export " + curParams.species}/>
+                <ToolTipIconButton Icon={Forest} className={"margin-50-right"} color={"secondary"} onClick={()=>server.runExport("individual",setError)} tooltipText={'Export the data for all species into separate CSVs located in the respective species folders.'} text={"Export every species"}/>
+                <ToolTipIconButton Icon={Park} color={"primary"} onClick={()=>server.runExport("single",setError)} tooltipText={'Export the data for '+curParams.species+' into a CSV located in the species folder.'} text={"Export " + curParams.species}/>
             </>
         }
         </div>

@@ -57,8 +57,3 @@ class Serializable:
         with open(path, "rb") as f:
             data = pickle.load(f)
             return type.fromDict(data)
-
-    def __getstate__(self):
-        if not Serializable.OMIT_WARNINGS:
-            print(f"WARNING: Do not use pickle on {self.__class__.__name__}. If anything changes data becomes unusable")
-        return super().__getstate__()

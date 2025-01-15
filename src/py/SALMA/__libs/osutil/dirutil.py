@@ -56,9 +56,9 @@ def getAllFiles(folder:str, pattern:str = None, returnAsDF:bool = False, colName
     """
 
     if pattern is None:
-        f = folder.split("/")
+        f = folder.split(os.sep)
         pattern = f[-1]
-        folder = "/".join(f[:-1])
+        folder = os.sep.join(f[:-1])
 
 
     #Replace the dots inside the regex pattern
@@ -68,7 +68,7 @@ def getAllFiles(folder:str, pattern:str = None, returnAsDF:bool = False, colName
     # by replacing '*' with '(.*)' to capture the part that matches the star
     regex_pattern = re.sub(r'\*', r'(.*)', regex_pattern)
 
-    if folder[-1] != "/": folder += "/"
+    if folder[-1] != os.sep: folder += os.sep
 
     compiled_pattern = re.compile(regex_pattern)
 

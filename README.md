@@ -169,3 +169,13 @@ kill -15 PID
 or 
 kill -9 PID
 ```
+on Windows:
+
+to find the process ID
+```
+netstat -ano | findstr :3000
+```
+then replace <PID> with the id to kill the process
+```
+taskkill /PID <PID> /F
+```
