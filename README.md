@@ -20,6 +20,8 @@ __Python based__
 
 Tested on NPM 18.0 and Python 3.11 
 
+On Windows use Python 3.9.11 as there seems to be an issue with visual studio build tools and Python 3.11. It might work on your machine though.
+
 # Setting up Develompent Environment
 
 It is much easier to use an IDE like pycharm, hence it will do most installation steps for you.
@@ -156,7 +158,7 @@ __You have to do this manually after installation!__
 
 ## Troubleshooting
 
-1. The port is already in use and I can't start SALMA
+### 1. The port is already in use and I can't start SALMA
 
 on a Mac do the following:
 ```
@@ -169,3 +171,11 @@ kill -15 PID
 or 
 kill -9 PID
 ```
+
+### 2. Windows Issues
+- On Windows use Python 3.9.11 as there seems to be an issue with visual studio build tools and Python 3.11. It might work on your machine though.
+- Install pyinstaller globally before attempting to build the executable: `pip install pyinstaller`
+
+### 3. Multiprocess Issues
+- When multiprocess is used "fork" mode will always work but is unsupported for Windows for example. See index.py for a switch that switches between spawn and fork.
+This can lead to problems with multiprocessing in libraries that need to be told to use multiprocessing instead of loky or joblib explicitely in this case. This problem only arises in conjunction with pyinstaller, and not during debug. 
