@@ -33,7 +33,7 @@ class TrainedModel(Serializable):
 
     trainedClassifier:any
 
-    def __init__(self, modelname:str, modelID: ModelType | str, trainData:ClassifierDataSet, testData:ClassifierDataSet = None,
+    def __init__(self, modelname:str, modelID: Union[ModelType,str], trainData:ClassifierDataSet, testData:ClassifierDataSet = None,
                        scaler:StandardScaler = None, labelEncoder:LabelEncoder = None,
                        testScore:float = -1, trainScore:float = -1,
                        trainedClassifier:any = None):

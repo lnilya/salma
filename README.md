@@ -171,7 +171,16 @@ kill -15 PID
 or 
 kill -9 PID
 ```
+on Windows:
 
+to find the process ID
+```
+netstat -ano | findstr :3000
+```
+then replace <PID> with the id to kill the process
+```
+taskkill /PID <PID> /F
+```
 ### 2. Windows Issues
 - On Windows use Python 3.9.11 as there seems to be an issue with visual studio build tools and Python 3.11. It might work on your machine though.
 - Install pyinstaller globally before attempting to build the executable: `pip install pyinstaller`

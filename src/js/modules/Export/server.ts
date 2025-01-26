@@ -39,7 +39,7 @@ export async function loadData():Promise<EelResponse<ExportFolderContent>>{
     return res
 }
 
-export async function runExport(type:'individual'|'all'|'single'):Promise<EelResponse<boolean>>{
+export async function runExport(type:'individual'|'all'|'single', setError:any):Promise<EelResponse<boolean>>{
     const wf = getConnectedValue(alg.asWorkingFolder)
     const moduleParams = getConnectedValue(alg.curTaskParameterValues)
     
@@ -48,6 +48,7 @@ export async function runExport(type:'individual'|'all'|'single'):Promise<EelRes
     const curParams = {...moduleParams,"workingfolder":wf, "type":type}
     var res:EelResponse<boolean> = await eel.runStep<boolean>(self.taskName,'export',curParams)
     updateConnectedValue(ui.overlay,null)
-    
+    if(res.error) setError(res)
+    else setError(null)
     return res
 }
