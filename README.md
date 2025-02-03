@@ -1,6 +1,14 @@
 # SALMA
 Semi-Automated Leaf Morphology Analysis
 
+If you just want to use the software, please download the executables and follow the in-app tutorial videos. 
+If you want to debug and extend the softeware, follow the instructions below on how to setup this repository.
+
+## Download Executable
+
+Issues: 
+- On initial startup the software will build a lot of caches, be patient if the first click on some menu items takes a while. This will only happen once.
+- On **Windows only** the training of the models can't be parallelized, because of an issue with multiprocessing and PyInstaller. The training step therefore will take longer on Windows. In practice the training takes only seconds to minutes.
 
 ## Tech Stack
 

@@ -1,4 +1,5 @@
 import copy
+import platform
 import math
 
 from sklearn import svm
@@ -115,8 +116,13 @@ def getClassifier(t: ModelType, vars: FeatureList):
     if t.isEnsemble():
         t = t.parseToNonEnsembleVersion()
     sv = classifiers[t]
-    maxJobs = math.prod([len(v) for v in sv.param_grid.values()]) * sv.cv
-    sv.n_jobs = min(maxJobs, LocalSettings.maxNumProcesses)
+
+    # TODO: Currently there is a bug related to pyInstaller and multiprocessing preventing proper parallelizing of the training on Windows. Will be disabled here, but needs to be implemented.
+    if platform.system() == 'Windows':
+        sv.n_jobs = 1
+    else:
+        maxJobs = math.prod([len(v) for v in sv.param_grid.values()]) * sv.cv
+        sv.n_jobs = min(maxJobs, LocalSettings.maxNumProcesses)
 
     if t == ModelType.ANN1:
         clf = copy.deepcopy(sv)
