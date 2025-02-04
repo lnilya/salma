@@ -9,6 +9,8 @@ import * as self from "./params";
 import {OverlayState} from "../../../salma/js/types/uitypes";
 import * as ui from "../../../salma/js/state/uistates";
 import * as eventbus from "../../../salma/js/state/eventbus";
+import * as eel from "../../../salma/js/eel/eel";
+import {Task} from "../../../salma/js/types/pipelinetypes";
 interface IRefinementSidebarButtonsProps {
 
 };
@@ -16,11 +18,12 @@ const RefinementSidebarButtons: React.FC<IRefinementSidebarButtonsProps> = () =>
     
     const curParams: self.Parameters = useRecoilValue(alg.curTaskParameterValues) as self.Parameters;
     const [overlay, setOverlay] = useRecoilState<OverlayState>(ui.overlay);
+    const curTask: Task = useRecoilValue(ui.selectedTask);
     
     const runRefine = async (force:boolean = null)=>{
         if(!curParams.species || overlay ) return
         
-        setOverlay({msg:"Running...",display:"overlay",nonBlocking:false, progress:0})
+        setOverlay({msg:"Running...",display:"overlay",nonBlocking:false, progress:0,abortCallBack:()=>{eel.abortStep(curTask.name)}})
         const res = await server.runBatchRefinement()
         setOverlay(null)
         eventbus.fireEvent("RefinementCompleted")

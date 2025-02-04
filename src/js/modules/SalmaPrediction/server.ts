@@ -61,7 +61,6 @@ export async function runBatchRefinement():Promise<EelResponse<BatchRefinementRe
     const wf = getConnectedValue(alg.asWorkingFolder)
     const moduleParams = getConnectedValue(alg.curTaskParameterValues)
     const curParams = {...moduleParams,"workingfolder":wf}
-    
     var res:EelResponse<BatchRefinementResult> = await eel.runStepAsync<BatchRefinementResult>(self.taskName,'batchrefine',curParams)
     
     return res
