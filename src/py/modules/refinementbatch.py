@@ -172,7 +172,7 @@ def singleRefine(file: str, params:dict):
 
     return True
 
-def batchRefine(wf:str, species:str, ncpus:int, params):
+def batchRefine(wf:str, species:str, ncpus:int, params, abortSignal:Callable):
 
     #get the output folders
     refPreds = Data.getRefinedPredictionsFolder(wf,species)
@@ -189,7 +189,7 @@ def batchRefine(wf:str, species:str, ncpus:int, params):
     for f in allFiles:
         allArgs += [[f,params]]
     updateFun(0, len(allFiles))
-    res = mputil.runParallel(singleRefine, allArgs, ncpus, ncpus == 1, progressUpdate=updateFun)
+    res = mputil.runParallel(singleRefine, allArgs, ncpus, ncpus == 1, progressUpdate=updateFun, checkForAbort=abortSignal)
 
     #update the settings file
     curSettings = {"minsize": params["minsize"][0],

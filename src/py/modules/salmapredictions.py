@@ -19,7 +19,7 @@ def singlePrediction(model:TrainedModel, imgSrcPath:str, maskOutputPath:str):
 def updateFun(cur:int, total:int):
     eeljs_sendProgress(cur/total, f"Segmenting image {cur}/{total}")
 
-def predict(workingFolder:str, species, processes):
+def predict(workingFolder:str, species, processes, abortSig:callable):
 
     #collect all images in the working folder/species and load all the models.
     #aggregate into model, image pairs
@@ -38,7 +38,7 @@ def predict(workingFolder:str, species, processes):
         allInputs.extend(modelArgs)
 
     updateFun(0,len(allInputs))
-    allRes = mputil.runParallel(singlePrediction,allInputs,processes,processes == 1, progressUpdate=updateFun)
+    allRes = mputil.runParallel(singlePrediction,allInputs,processes,processes == 1, progressUpdate=updateFun, checkForAbort=abortSig)
 
     pass
 

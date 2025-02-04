@@ -135,7 +135,7 @@ class ModelTraining(ModuleBase):
         elif action == "prediction":
             eeljs_sendProgress(0.01)
 
-            predict(workingfolder, params["species"], numcpus)
+            predict(workingfolder, params["species"], numcpus, self.abortSignal)
 
             #return the same data as before
             return self.run('loadAndCreate',params)

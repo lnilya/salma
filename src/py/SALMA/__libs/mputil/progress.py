@@ -6,7 +6,13 @@ from tqdm import tqdm
 import threading
 
 
-def _wrapper(args):
+def _wrapper(argsWithAbort):
+    args,abort_flag = argsWithAbort
+
+    #do not execute if aborted
+    if abort_flag.value:
+        return None
+
     #Check if is dictionary or list
     if isinstance(args,dict):
         func = args.pop('func')
@@ -15,7 +21,8 @@ def _wrapper(args):
         func = args[0]
         return func(*args[1:])
 
-def runParallel(func:Callable, args:List,poolSize:int=11, debug=False, progressMessage:str = None, progressUpdate:Callable = None):
+
+def runParallel(func:Callable, args:List,poolSize:int=11, debug=False, progressMessage:str = None, progressUpdate:Callable = None, checkForAbort:Callable = None):
     """
     Runs a function in parallel with a progress bar
     :param func: Function to run
@@ -44,21 +51,30 @@ def runParallel(func:Callable, args:List,poolSize:int=11, debug=False, progressM
             #create a counter variable to keep track of progress that is shared between processes
             _counter = manager.Value('i', 0)
             _lock = manager.Lock()
+            abortFlag = manager.Value('b', False)
 
             #The progress update must be run in the parent process, since otherwise on windows no update is shown (as it spawns a new process and eel looses the JS function bindings).
             #Therefore we run the progress monitor in the parent process but a separate theread and update the progress bar in real-time.
             def progress_monitor():
                 """Runs in a separate thread in the parent process and updates progress in real-time."""
                 while _counter.value < len(args):
+                    if checkForAbort is not None and checkForAbort():
+                        abortFlag.value = True
+                        print("Aborting Parallel Execution, waiting for running processes to join...")
+                        break
+
                     progressUpdate(_counter.value, len(args))
                     time.sleep(0.5)  # Check progress every 0.5 seconds
+
+
 
             # Start the progress monitor in a separate thread
             progress_thread = threading.Thread(target=progress_monitor, daemon=True)
             progress_thread.start()
-
+            #Merge args with abort request flag
+            argsWithAbort = [(a, abortFlag) for a in args]
             with multiprocessing.Pool(processes=poolSize) as pool:
-                for result in pool.imap(_wrapper, args):
+                for result in pool.imap(_wrapper, argsWithAbort):
                     results.append(result)
                     with _lock:
                         _counter.value += 1

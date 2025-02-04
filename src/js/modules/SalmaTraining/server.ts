@@ -41,7 +41,7 @@ export async function runPredictions(species:string[]):Promise<EelResponse<Salma
         abortCallBack:()=>{eel.abortStep(self.taskName)}
     }
     updateConnectedValue(ui.overlay,uiState)
-    var res:EelResponse<SalmaTrainingResult> = await eel.runStep<SalmaTrainingResult>(self.taskName,'prediction',curParams)
+    var res:EelResponse<SalmaTrainingResult> = await eel.runStepAsync<SalmaTrainingResult>(self.taskName,'prediction',curParams)
     updateConnectedValue(ui.overlay,null)
     return res
     // return {error:null,data:null}

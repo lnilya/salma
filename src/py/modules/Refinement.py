@@ -86,7 +86,7 @@ class Refinement(ModuleBase):
             #get the number of CPUs to use
             ncpus = os.cpu_count()
 
-            return batchRefine(workingfolder,species,ncpus,params)
+            return batchRefine(workingfolder,species,ncpus,params,self.abortSignal)
 
         elif action == "selectimage":
             force = params.get("force",False)
