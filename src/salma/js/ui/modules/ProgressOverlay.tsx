@@ -11,6 +11,7 @@ interface IProgressOverlayProps {
     className?: string
     
     sidebarActive:boolean
+    
 }
 
 
@@ -38,15 +39,22 @@ const ProgressOverlay: React.FC<IProgressOverlayProps> = ({sidebarActive, classN
     //Copy the overlay state so we can animate
     const [state, dispatch] = useReducer(reducer, { open:false, overlay:null });
     const [msg, setMsg] = useState<ReactNode>('')
+    const [canceled,setCanceled] = useState(false)
     
     useEffect(()=>{
         if(overlay && overlay.display != 'text' && !state.open) {
             dispatch({type: 'open', payload: overlay})
+            setCanceled(false)
         }
         else if(!overlay && state.open) dispatch({type:'close'})
         if(overlay?.msg && msg != overlay?.msg)
             setMsg(overlay.msg)
     },[overlay])
+    
+    const abort = ()=>{
+        state.overlay.abortCallBack()
+        setCanceled(true)
+    }
     
     return (
         <div className={(className||'') +" progress-overlay fl-row pad-200-top" + cl(state.open,'open') + cl(sidebarActive,'with-sidebar')}>
@@ -58,7 +66,9 @@ const ProgressOverlay: React.FC<IProgressOverlayProps> = ({sidebarActive, classN
                 {state.overlay?.progress === undefined||state.overlay?.progress === -1 && <LinearProgress variant="indeterminate"/> }
                 {state.overlay?.abortCallBack &&
                     <div className="margin-100-top text-center">
-                        <Button color={'primary'} onClick={state.overlay.abortCallBack} variant={'contained'}>Cancel Execution</Button>
+                        <Button color={'primary'} onClick={abort} variant={'contained'} disabled={canceled}>
+                            {canceled?'Waiting for Abort...':'Abort Execution'}
+                        </Button>
                     </div>
                 }
             </div>
