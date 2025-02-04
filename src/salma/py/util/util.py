@@ -1,8 +1,6 @@
 import time
 from typing import List
 
-from matplotlib import pyplot as plt, cm
-
 startTimes = []
 
 
@@ -56,17 +54,3 @@ def parseRanges(rangeStr: str, inlcudeLast: bool = True, unique: bool = True) ->
         return list(set(ret))
 
     return ret
-
-
-class MplColorHelper:
-
-    def __init__(self, cmap_name, start_val, stop_val, mpl=None):
-        self.cmap = plt.get_cmap(cmap_name)
-        self.min = float(start_val)
-        self.max = float(stop_val)
-
-    def get_rgba(self, val:float):
-        return self.cmap(int(255.0 * (val - self.min) / (self.max - self.min)))
-    def get_rgb(self, val):
-        rgba = self.get_rgba(val)
-        return (rgba[0],rgba[1],rgba[2])
