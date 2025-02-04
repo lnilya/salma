@@ -30,8 +30,8 @@ class ModelTraining(ModuleBase):
         self.log = 'ModelTraining'
         self.trace('initialized')
 
-    def unpackParams(self,subsampling, workingfolder, numcpus ,**other):
-        return subsampling,workingfolder, numcpus[0]
+    def unpackParams(self,subsampling, workingfolder, **other):
+        return subsampling,workingfolder
 
     def createSubfolders(self,speciesFolders):
 
@@ -67,7 +67,9 @@ class ModelTraining(ModuleBase):
     def run(self, action, params):
 
         #Parse Parameters out of the dictionary arriving from JS
-        subsampling,workingfolder,numcpus = self.unpackParams(**params)
+        subsampling,workingfolder = self.unpackParams(**params)
+        numcpus = os.cpu_count()
+
         if workingfolder[-1] != os.sep:
             workingfolder += os.sep
 

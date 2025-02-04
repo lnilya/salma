@@ -25,7 +25,7 @@ def exportSingle(maskFilePath:str, sum:bool, species:str, splitter:str = None, d
     name = maskFilePath.split(os.sep)[-1].split(".")[0]
     template = {"File":name, "Species":species, "Element":0}
 
-    if splitter:
+    if splitter and splitter in name:
         for i,s in enumerate(name.split(splitter)):
             template["Descriptor %d"%i] = s
 

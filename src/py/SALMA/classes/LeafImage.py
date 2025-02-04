@@ -34,7 +34,6 @@ class LeafImage(Serializable):
             "_predictedProps":self._predictedProps,
 
             "name":self.name,
-            "number":self.number,
             "_featuresCache": self._featuresCache
         }
         pass
@@ -79,7 +78,6 @@ class LeafImage(Serializable):
 
             #parse a number out of the iamge path
             self.name = os.path.basename(imgOrMaskPath)
-            self.number = int("".join([c for c in imgOrMaskPath if c.isdigit()]))
 
             self._predictedMask = None
     def getFolderName(self):
