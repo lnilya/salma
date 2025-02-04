@@ -10,7 +10,7 @@ def _wrapper(argsWithAbort):
     args,abort_flag = argsWithAbort
 
     #do not execute if aborted
-    if abort_flag.value:
+    if abort_flag is not None and abort_flag.value:
         return None
 
     #Check if is dictionary or list
@@ -40,7 +40,9 @@ def runParallel(func:Callable, args:List,poolSize:int=11, debug=False, progressM
 
     results = []
     if debug:
-        for a in tqdm(args):
+        # Merge args with abort request flag
+        argsWithAbort = [(a, None) for a in args]
+        for a in tqdm(argsWithAbort):
             results.append(_wrapper(a))
     else:
         if progressUpdate is None:

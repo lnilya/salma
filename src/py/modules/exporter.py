@@ -42,6 +42,8 @@ def exportSingle(maskFilePath:str, sum:bool, species:str, splitter:str = None, d
 
         rows.append(singleRow)
         #compute the total area
+    if len(rows)  == 0:
+        return None
 
     df = pd.DataFrame(rows)
     if dpi > 0:

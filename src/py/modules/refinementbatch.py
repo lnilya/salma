@@ -68,6 +68,7 @@ def fillSmallHolesRelative(mask: np.ndarray, minSize: float, keeponlybiggest:boo
     if keeponlybiggest:
         maxAreaLbl = np.argmax([p.area for p in props])
         labels = labels == props[maxAreaLbl].label
+        labels = labels.astype(np.uint8)
         props = skimage.measure.regionprops(labels)
 
     # Create an empty mask to store the result
@@ -109,7 +110,7 @@ def refine(rawImg: np.ndarray, minSize: int, maxHoleSize: int, openingsize: int,
         # open and close mask - equivalent to a morphological denoising
         eeljs_sendProgress(-1, "Morphological smoothing...")
         mask = skimage.morphology.binary_opening(mask, disk(openingsize))
-    pyutil.toctic("Holes")
+    #pyutil.toctic("Holes")
     if abortSignal(): raise Exception("Aborted")
 
     if minSize > 0 and not keeponlybiggest:
@@ -118,13 +119,13 @@ def refine(rawImg: np.ndarray, minSize: int, maxHoleSize: int, openingsize: int,
 
     if abortSignal(): raise Exception("Aborted")
 
-    pyutil.toctic("Opening")
+    #pyutil.toctic("Opening")
     if maxHoleSize > 0:
         # remove holes below a certain size
         mask = fillSmallHolesRelative(mask, maxHoleSize, keeponlybiggest, abortSignal)
 
     if abortSignal(): raise Exception("Aborted")
-    pyutil.toctic("Small objects")
+    #pyutil.toctic("Small objects")
 
     # identify blobs in the mask
     eeljs_sendProgress(-1, "Identifying objects...")
@@ -133,13 +134,13 @@ def refine(rawImg: np.ndarray, minSize: int, maxHoleSize: int, openingsize: int,
 
     if abortSignal(): raise Exception("Aborted")
 
-    pyutil.toctic("Labeling")
+    #pyutil.toctic("Labeling")
     if keeponlybiggest:
         maxAreaLbl = np.argmax([p.area for p in props])
         labels = labels == props[maxAreaLbl].label
         mask = labels
 
-    pyutil.toctic("Keep only biggest")
+    #pyutil.toctic("Keep only biggest")
 
     if abortSignal(): raise Exception("Aborted")
 
@@ -148,7 +149,7 @@ def refine(rawImg: np.ndarray, minSize: int, maxHoleSize: int, openingsize: int,
     else:
         contours = None
 
-    pyutil.toctic("Contours")
+    #pyutil.toctic("Contours")
 
     return mask, contours, []
 

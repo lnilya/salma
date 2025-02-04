@@ -4,4 +4,9 @@ import eel
 
 #Sends progress of current step to JS interface
 def eeljs_sendProgress(progress:float, msg:str = None):
-    eel.progress(progress,msg)
+    try:
+        eel.progress(progress,msg)
+    except:
+        #This happens on windows if the function is executred in a child process.
+        pass
+        
