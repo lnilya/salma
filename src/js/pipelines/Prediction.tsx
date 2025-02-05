@@ -23,9 +23,12 @@ const dataKeys = {
 }
 
 const helpScreen = <div>
-    This step is a simple step that show you how to train a model and make predictions.
-    <br/>
-    <ResponsiveEmbed src='https://www.youtube.com/embed/QtzI1SwOdbY' allowFullScreen/>
+    These tutorials will be added in the final version of SALMA after peer review to maintain anonymity.
+    
+    Please refer to the video provided along with the peer review documents for a walk through of the software.
+    {/*This step is a simple step that show you how to train a model and make predictions.*/}
+    {/*<br/>*/}
+    {/*<ResponsiveEmbed src='https://www.youtube.com/embed/QtzI1SwOdbY' allowFullScreen/>*/}
 </div>
 
 function getAllTasks(): Task[] {
