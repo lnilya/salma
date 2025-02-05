@@ -1,6 +1,6 @@
-from abc import abstractproperty, abstractmethod
 import os
 import pickle
+from abc import abstractmethod
 from typing import TypeVar, Type
 
 

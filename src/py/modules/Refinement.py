@@ -4,16 +4,13 @@ from enum import Enum
 import numpy as np
 import skimage
 from PIL import Image
-from matplotlib.pyplot import contour
-from scipy.ndimage import binary_fill_holes
-
 
 from src.py.modules.RefinementFile import RefinementFile
 from src.py.modules.refinementbatch import generateOutlinePolygons, refine, batchRefine
 from src.py.paths import Data
 from src.salma.py.modules.ModuleBase import ModuleBase
 from src.salma.py.util.imgutil import getPreviewImage
-from plotly import express as px
+
 
 #make enum with some keys
 class RefinementKeys(Enum):

@@ -5,6 +5,7 @@ from typing import Dict
 
 import eel
 
+from src.py.SALMA.__libs import pyutil
 from src.py.__config import getModuleConnector
 from src.salma.py.ModuleConnector import ModuleConnector
 from src.salma.py.SessionData import SessionData
@@ -134,13 +135,15 @@ def onNewPipelineLoaded(pipelineID:str, pipelineParamsByModuleID:Dict = None):
 # Parameters are defined in the JS definition of module. Module will be instantiated if it has not been created yet.
 @eel.expose
 def runStep(taskName: str, action:str, params: Dict[str, str]):
-
+    pyutil.tic("Module init")
     m: ModuleBase = getTaskModule(taskName)
+    pyutil.toc("Module init")
     if log:
         print('[Eel PID(%s)]: Running action: %s on %s with inputs.' % (os.getpid(), action, taskName))
 
+    pyutil.tic("Module run")
     res = m.run(action, params)
-
+    pyutil.toc("Module run")
     if log:
         print('[Eel PID(%s)]: Completed action: %s' % (os.getpid(), action))
     return res

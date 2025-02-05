@@ -1,4 +1,6 @@
 import numpy as np
+from scipy.odr import Model
+
 from src.py.SALMA.classes.PretrainedVotingClassifier import PretrainedVotingClassifier
 from src.py.SALMA.classifierDefinitions import getClassifier
 
@@ -16,7 +18,7 @@ def train(clf,X,y):
             clf.fit(X, y)
 
     return clf
-def trainClassifier(name:str, cd:ClassifierDataSet, mt:ModelType, ensembleFolds:int = 5, silent=False, saveModelPath:str = None, returnTime:bool = False, numcpus:int = 8):
+def trainClassifier(name:str, cd:ClassifierDataSet, mt:ModelType = ModelType.SALMA, ensembleFolds:int = 5, silent=False, saveModelPath:str = None, returnTime:bool = False, numcpus:int = 8):
 
     if returnTime:
         pyutil.tic()

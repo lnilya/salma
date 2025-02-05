@@ -57,11 +57,11 @@ export async function initFolder(resSetter:(any)=>void):Promise<EelResponse<Salm
     const uiState:OverlayState ={
         msg: 'Loading Working Folder (may take a while on first run...)',
         display: "overlay",
-        progress:-1,
+        progress:undefined,
         nonBlocking:false,
     }
     updateConnectedValue(ui.overlay,uiState)
-    var res:EelResponse<SalmaTrainingResult> = await eel.runStepAsync<SalmaTrainingResult>(self.taskName,'loadAndCreate',curParams)
+    var res:EelResponse<SalmaTrainingResult> = await eel.runStep<SalmaTrainingResult>(self.taskName,'loadAndCreate',curParams)
     updateConnectedValue(ui.overlay,null)
     //Run the algorithm associated with this module
 

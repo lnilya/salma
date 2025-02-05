@@ -1,10 +1,10 @@
 from multiprocessing import freeze_support
-
+from multiprocessing import set_start_method
 if __name__ == '__main__':
     freeze_support()
     import platform
     if platform.system() != 'Windows':
-        from multiprocessing import set_start_method
+        print("Setting start method to fork")
         set_start_method('fork', force=True)
 
 
@@ -14,7 +14,6 @@ print(f"Starting Process {os.getpid()} (Parent: {os.getppid()})  ({__name__}): "
 
 if __name__ == '__main__':
     print("Starting Server (May take a while)...")
-    #print process ID
     import sys
 
     from src.salma.py import settings
@@ -34,7 +33,7 @@ if __name__ == '__main__':
         print("")
         print('Visit http://%s:%d in your browser to use software' % (settings.EEL_HOST, settings.EEL_PORT))
         print('On first run it may take a while for the server to be receptive. So if you can\'t reach the site in your browser wait a little bit and reload.')
-        print('Please report any bugs or suggestions to: http://github.com/lnilya/salma')
+        print('Please report any bugs or suggestions to the Github repository.')
         eel.init('build')
         eelutil.emptyTmpFolder(settings.TMP_FOLDER)
         eel.start(port = settings.EEL_PORT,

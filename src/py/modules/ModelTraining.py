@@ -1,27 +1,10 @@
-import os
-from enum import Enum
 
-import pandas as pd
-import numpy as np
-from tqdm import tqdm
-
-import src.py.paths as paths
-from src.py.SALMA import LocalSettings
-from src.py.SALMA.classes.ClassifierDataSet import ClassifierDataSet
-from src.py.SALMA.classes.Enums import Features, SubsamplingMethod, ModelType
-from src.py.SALMA.classes.LeafImageCollection import LeafImageColection
-from src.py.SALMA.classes.TrainedModel import TrainedModel
-from src.py.SALMA.core.training import trainClassifier
-from src.py.modules.salmapredictions import predict
-from src.salma.py.eeljsinterface import eeljs_sendProgress
 from src.salma.py.modules.ModuleBase import ModuleBase
-
+import os
+import src.py.paths as paths
 
 months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
-#make enum with some keys
-class ModelTrainingKeys(Enum):
-    WFContent = 'WFContent'
 
 class ModelTraining(ModuleBase):
 
@@ -52,19 +35,26 @@ class ModelTraining(ModuleBase):
                 os.makedirs(f + paths.Data.filteredPredictionsSubfolder)
 
     def trainScpecies(self,speciesFolder,subsample):
+        from src.py.SALMA.classes.ClassifierDataSet import ClassifierDataSet
+        from src.py.SALMA.classes.Enums import Features
+        from src.py.SALMA.classes.LeafImageCollection import LeafImageColection
+        from src.py.SALMA.core.training import trainClassifier
+
         if  not os.path.exists(speciesFolder):
             return
 
         lic = LeafImageColection(speciesFolder + paths.Data.modelSubfolder + "*.jpg")
-        cd:ClassifierDataSet = lic.toTrainingData(Features.ColorsAndGradients, subsample, subsamplingMethod=SubsamplingMethod.Random)
+        cd:ClassifierDataSet = lic.toTrainingData(Features.ColorsAndGradients, subsample)
 
         speciesName = speciesFolder.split(os.sep)[-2]
         modelPath = speciesFolder + paths.Data.modelSubfolder + speciesName + ".salma"
-        tm = trainClassifier(speciesName, cd, ModelType.SALMA, silent=True,saveModelPath=modelPath)
+        tm = trainClassifier(speciesName, cd, silent=True,saveModelPath=modelPath)
 
         return tm
 
     def run(self, action, params):
+        from src.py.SALMA.__libs import pyutil
+
 
         #Parse Parameters out of the dictionary arriving from JS
         subsampling,workingfolder = self.unpackParams(**params)
@@ -74,6 +64,9 @@ class ModelTraining(ModuleBase):
             workingfolder += os.sep
 
         if action == 'loadAndCreate':
+
+            import pandas as pd
+            from src.py.SALMA.classes.TrainedModel import TrainedModel
             #get all Folders in working folder
             allSpecies = os.listdir(workingfolder)
             allSpecies = [workingfolder+f+os.sep for f in allSpecies if os.path.isdir(os.path.join(workingfolder,f))]
@@ -113,7 +106,6 @@ class ModelTraining(ModuleBase):
 
 
             res = pd.DataFrame(res,columns=['id','Images','Training Images','Raw Predictions','Refined Predictions','Mtime',"MScore","MNumImgs"])
-            self.onGeneratedData(ModelTrainingKeys.WFContent, res, params)
 
             #Generate an output that will go to javascript for displaying on the UI side
             self.trace('Finished')
@@ -121,12 +113,15 @@ class ModelTraining(ModuleBase):
                 'info': res.to_dict(orient="records")
             }
         elif action == "training":
+            from tqdm import tqdm
+            from src.salma.py.eeljsinterface import eeljs_sendProgress
+
+
             eeljs_sendProgress(0.01)
             total = len(params["species"])
             cur = 0
             for s in tqdm(params["species"]):
                 eeljs_sendProgress(cur/total, f"Training {s} ({cur+1}/{total})")
-                LocalSettings.maxNumProcesses = numcpus
                 self.trainScpecies(workingfolder + s + os.sep, subsampling[0])
                 cur += 1
                 if self.abortSignal():
@@ -135,6 +130,9 @@ class ModelTraining(ModuleBase):
             return self.run('loadAndCreate',params)
 
         elif action == "prediction":
+            from src.salma.py.eeljsinterface import eeljs_sendProgress
+            from src.py.modules.salmapredictions import predict
+
             eeljs_sendProgress(0.01)
 
             predict(workingfolder, params["species"], numcpus, self.abortSignal)

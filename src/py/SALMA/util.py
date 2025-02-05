@@ -2,9 +2,7 @@ from typing import List, Union
 
 import numpy as np
 
-import plotly.express as px
-
-def stackImagesIntoGrid(imgArray3D:Union[np.ndarray,List], numrows:int = None, borderWidth:int = 0, borderFillValue:int = 0, norm:bool = True, plot:bool = False):
+def stackImagesIntoGrid(imgArray3D:Union[np.ndarray,List], numrows:int = None, borderWidth:int = 0, borderFillValue:int = 0, norm:bool = True):
 
     if isinstance(imgArray3D, list):
         imgArray3D = np.stack(imgArray3D, axis=2)
@@ -30,9 +28,6 @@ def stackImagesIntoGrid(imgArray3D:Union[np.ndarray,List], numrows:int = None, b
                 data = np.pad(data, ((borderWidth, borderWidth), (borderWidth, borderWidth)), mode='constant', constant_values=borderFillValue)
 
             newImg[(r*imgRows):((r+1)*imgRows), (c*imgCols):((c+1)*imgCols)] = data
-
-    if plot: #in grayscale
-        px.imshow(newImg, color_continuous_scale='gray').show()
 
     return newImg
 

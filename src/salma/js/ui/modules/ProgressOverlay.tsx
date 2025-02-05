@@ -63,7 +63,7 @@ const ProgressOverlay: React.FC<IProgressOverlayProps> = ({sidebarActive, classN
                     {msg}
                 </div>
                 {state.overlay?.progress !== undefined && <LinearProgress variant="determinate" value={5 * Math.round(overlay?.progress * 20)}/>}
-                {state.overlay?.progress === undefined||state.overlay?.progress === -1 && <LinearProgress variant="indeterminate"/> }
+                {state.overlay?.progress === undefined && <LinearProgress variant="indeterminate"/> }
                 {state.overlay?.abortCallBack &&
                     <div className="margin-100-top text-center">
                         <Button color={'primary'} onClick={abort} variant={'contained'} disabled={canceled}>

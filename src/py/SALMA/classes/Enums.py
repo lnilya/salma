@@ -1,7 +1,6 @@
 from enum import Enum
-from typing import TypeVar, List, Union
+from typing import List, Union
 
-import pandas as pd
 from typing_extensions import Optional
 
 from src.py.SALMA.classes.FeatureList import FeatureList

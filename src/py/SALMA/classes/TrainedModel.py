@@ -3,14 +3,11 @@ import pickle
 from typing import Union
 
 import numpy as np
-from sklearn.inspection import PartialDependenceDisplay
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 from src.py.SALMA.classes.ClassifierDataSet import ClassifierDataSet
 from src.py.SALMA.classes.Enums import ModelType
 from src.py.SALMA.classes.Serializable import Serializable
-import plotly.graph_objects as go
-import plotly.express as px
 
 class TrainedModel(Serializable):
 
@@ -47,37 +44,7 @@ class TrainedModel(Serializable):
         self.trainScore = trainScore
         self.trainedClassifier = trainedClassifier
 
-    def visualizePDPPlot(self,dimX:str,dimY:str, data:ClassifierDataSet = None):
-        if data is None:
-            data = self.trainingData._X
 
-
-        X,yl = data.getClassificationDataForModelPrediction(self)
-        res = PartialDependenceDisplay.from_estimator(self.trainedClassifier,
-                                                      X,
-                                                      [[dimX,dimY]],
-                                                      feature_names=self.trainingData.vars.list,
-                                                      grid_resolution=20,
-                                                      n_jobs=10,percentiles=(0.01,0.99), verbose=1)
-
-        pdp = res.pd_results
-        x = pdp[-1].grid_values[0]
-        y = pdp[-1].grid_values[1]
-        z = pdp[-1].average[0].T
-        f = go.Figure()
-        f.add_contour(x=x, y=y, z=z, showlegend=False, showscale=False, colorscale="RdBu")
-        # f.add_scatter(x=X[:,self.trainingData.vars.list.index(dimX)],
-        #               y=X[:,self.trainingData.vars.list.index(dimY)], mode="markers", marker=dict(color=yl, colorscale="RdBu", size=5))
-        f = data.visDataset(1000,[dimX,dimY],f, self.scaler,quantileBounds=0.01)
-        f.show()
-        k = 0
-
-
-        k = 0
-        pass
-
-    def visualizeDecisionBoundary(self, trData:ClassifierDataSet, varX:str, varY:str):
-        pass
 
     def toDict(self, discardDatasets:bool = False) -> dict:
         return {

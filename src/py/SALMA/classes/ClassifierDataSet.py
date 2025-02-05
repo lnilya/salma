@@ -1,18 +1,13 @@
 from typing import Dict, Optional, Union, List
 
 import numpy as np
-from sklearn.cluster import MiniBatchKMeans
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from tqdm import tqdm
 
-from src.py.SALMA.__libs.mlutil import runPCA
 from src.py.SALMA.classes.Enums import SubsamplingMethod
 from src.py.SALMA.classes.FeatureList import FeatureList
 from src.py.SALMA.classes.Serializable import Serializable
-import plotly.express as px
-import plotly.graph_objects as go
-from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler
+from imblearn.under_sampling import RandomUnderSampler
 
 
 
@@ -56,61 +51,6 @@ class ClassifierDataSet(Serializable):
         _needsDuplicateCheck = allowDuplicates
 
 
-    def visDataset(self, maxNumPoints:int = 1000, dims:list[str] = None,addToFif:go.Figure = None, scaler:StandardScaler = None, quantileBounds:float = 0):
-
-        X = self._X
-        y = self._y
-
-
-        if quantileBounds > 0:
-            remIdx = []
-            for i in range(X.shape[-1]):
-                q = np.quantile(X[:,i], [quantileBounds, 1-quantileBounds])
-                remIdx.append((X[:,i] > q[0]) & (X[:,i] < q[1]))
-
-            remIdx = np.all(remIdx, axis=0)
-            X = X[remIdx,:]
-            y = y[remIdx]
-
-        #subsample datapoints
-        if maxNumPoints is not None and len(self._X) > maxNumPoints:
-            idx = np.random.choice(len(X), maxNumPoints, replace=False)
-            X = X[idx]
-            y = y[idx]
-
-
-        if scaler:
-            X = scaler.transform(X)
-
-
-        if dims is not None:
-            if len(dims) != 2:
-                raise ValueError("Only 2 dimensions can be visualized")
-            xIdx = self._features.list.index(dims[0])
-            yIdx = self._features.list.index(dims[1])
-            f = px.scatter(x=X[:,xIdx], y=X[:,yIdx], color=y)
-        else:
-            #run 2D-PCA
-            X, _,var, comps, uv = runPCA(X,2,True)
-            f = px.scatter(x=X[:,0], y=X[:,1], color=y)
-
-            maxGrad = np.max(np.abs(X))
-
-            #add annotations as labels
-            for i, txt in enumerate(self._features.list):
-                f.add_trace(go.Scatter(x=[0, uv[i, 0] * maxGrad], y=[0, uv[i, 1] * maxGrad], mode='lines', name=txt))
-                f.add_annotation(x=uv[i, 0] * maxGrad, y=uv[i, 1] * maxGrad, text=txt, showarrow=False,
-                                   bordercolor="black", borderwidth=1, borderpad=4, bgcolor="white")
-
-        if addToFif is not None:
-            for d in f.data:
-                addToFif.add_trace(d)
-            return addToFif
-
-        f.show()
-
-
-
 
 
     def printStats(self):
@@ -135,11 +75,10 @@ class ClassifierDataSet(Serializable):
         ss = None
         str = {0:numTrainingPoints//2,1:numTrainingPoints//2}
 
-        if self._subsamplingMethod == SubsamplingMethod.Centroids:
-            ss = ClusterCentroids(sampling_strategy= str,
-                                  estimator=MiniBatchKMeans(n_init=1, random_state=randomState), random_state=randomState)
-        elif self._subsamplingMethod == SubsamplingMethod.Random:
+        if self._subsamplingMethod == SubsamplingMethod.Random:
             ss = RandomUnderSampler(sampling_strategy=str, random_state=randomState)
+        else:
+            raise ValueError("Subsampling method not implemented")
 
         self._X, self._y = ss.fit_resample(self._X, self._y)
 
@@ -166,32 +105,6 @@ class ClassifierDataSet(Serializable):
         self._X = Xu
         self._needsDuplicateCheck = False
 
-    def dropDuplicatesOld(self, force:bool = False, silent=False, **tqdmParams):
-        if self._allowDuplicates: return
-        if not force and not self._needsDuplicateCheck: return
-
-        if self._X is None or len(self._X) == 0: return
-        #for each non-unique pixel, need to do a mean of the label values + ceil since the label may differ
-        Xu, indices, cnts = np.unique(self._X, axis=0, return_index=True, return_counts=True)
-
-        labels = indices[cnts > 1]
-        newyVals = []
-        for l in tqdm(labels, **tqdmParams):
-            #find all labels corresponding to this index
-            duplicateValue = self._X[l]
-            duplicateIndices = np.where(np.all(self._X == duplicateValue, axis=1))
-            #add a 1 if the majority of values is 1
-            newyVals.append(np.round(np.mean(self._y[duplicateIndices])) == 1)
-
-        # replace with new values, these will be the ones that will be used when making things unique
-        # since all labels are in indices
-        self._y[labels] = newyVals
-        if not silent:
-            print(f"Reduced dataset to {100*len(Xu)/len(self._X):.2f}% after duplicates")
-        self._X = Xu
-        #print dupliocte removal
-        self._y = self._y[indices]
-        _needsDuplicateCheck = False
 
     #add += operator
     def __iadd__(self, other: 'ClassifierDataSet'):
