@@ -40,10 +40,6 @@ def getAllFilesWithSubfolders(folder:str, pattern:str = None, returnAsDF:bool = 
 
     return matched_files
 
-if __name__ == "__main__":
-    getAllFilesWithSubfolders("/Users/shabanil/Documents/Uni/DeslippeLab/efti/_v3 link/_Models/Classifiers",
-                 "*_combined/*_SVM_*_AdultsOnly.pickle")
-
 def getAllFiles(folder:str, pattern:str = None, returnAsDF:bool = False, colNames:List[str] = None)->Union[pd.DataFrame,Dict[str,Union[str,List[str]]]]:
     """
     @deprecated
