@@ -3,8 +3,14 @@
 /.idea
 .DS_Store
 __pycache__
-/build/*
 /package-lock.json
 /public/tmp
 /dist
 /salma-1-0-0.spec
+/build/asset-manifest.json
+/build/eelJsInterface.js
+/build/favicon.ico
+/build/index.html
+/build/manifest.json
+/build/salma-1-0-0
+/build/static
