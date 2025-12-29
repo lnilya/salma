@@ -6,6 +6,9 @@ If you want to debug and extend the softeware, follow the instructions below on 
 
 ## Download Executable
 
+Please click "Releases" in the right sidebar and download the latest release for your operating system.
+Check out the YouTube walkthrough of how this works: https://youtu.be/j2TIpCErm9o
+
 Issues: 
 - On initial startup the software will build a lot of caches, be patient if the first click on some menu items takes a while. This will only happen once.
 - On **Windows only** the training of the models can't be parallelized, because of an issue with multiprocessing and PyInstaller. The training step therefore will take longer on Windows. In practice the training takes only seconds to minutes.
